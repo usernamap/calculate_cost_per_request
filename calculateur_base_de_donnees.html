@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>AliaTech - Calculateur Base de Données</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="favicon.ico">
+</head>
+<body>
+    <header class="bg-white shadow">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <!-- Logo et Marque -->
+            <a href="/" class="flex items-center space-x-2">
+                <!-- Logo Placeholder -->
+                <img src="logo.svg" alt="Logo AliaTech" class="h-10 w-10">
+                <span class="text-2xl font-bold text-blue-600">Aliatech</span>
+            </a>
+            <!-- Menu de Navigation -->
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="calculateur_requetes.html" class="text-blue-600 hover:text-blue-800">Calculateur Requêtes</a></li>
+                    <li><a href="calculateur_serveur.html" class="text-blue-600 hover:text-blue-800">Calculateur Serveur</a></li>
+                    <li><a href="calculateur_base_de_donnees.html" class="text-blue-600 hover:text-blue-800">Calculateur Base de Données</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <p>Évaluez les coûts de stockage, de sauvegarde, de redondance et d'opérations de votre base de données.</p>
+            <div class="calculator">
+                <!-- Code du calculateur base de données -->
+                <div class="input-section">
+                    <h2>Paramètres de la Base de Données</h2>
+                    <div class="input-group">
+                        <label for="N_utilisateurs">Nombre d'utilisateurs par mois :</label>
+                        <input type="number" id="N_utilisateurs" value="10000" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="N_enregistrements">Nombre d'enregistrements par utilisateur :</label>
+                        <input type="number" id="N_enregistrements" value="5" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="T_enregistrement">Taille moyenne d'un enregistrement (Ko) :</label>
+                        <input type="number" id="T_enregistrement" value="2" min="0" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label for="C_stockage">Coût de stockage par Go par mois (€) :</label>
+                        <input type="number" id="C_stockage" value="0.10" min="0" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label for="C_sauvegarde">Coût des sauvegardes par Go par mois (€) :</label>
+                        <input type="number" id="C_sauvegarde" value="0.02" min="0" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label for="C_redondance">Coût de la redondance par Go par mois (€) :</label>
+                        <input type="number" id="C_redondance" value="0.05" min="0" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label for="N_lectures">Nombre de lectures par utilisateur :</label>
+                        <input type="number" id="N_lectures" value="20" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="N_ecritures">Nombre d'écritures par utilisateur :</label>
+                        <input type="number" id="N_ecritures" value="5" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="C_requete">Coût par requête (€) :</label>
+                        <input type="number" id="C_requete" value="0.000005" min="0" step="0.000001">
+                    </div>
+                </div>
+                <div class="result-section">
+                    <div class="result" id="totalCost">Coût Total Base de Données : €0.00</div>
+                    <canvas id="costChart"></canvas>
+                    <div id="costDetails"></div>
+                </div>
+                <div class="math-info">
+                    <h3>Informations Mathématiques</h3>
+                    <p><strong>Formules Utilisées :</strong></p>
+                    <div class="math-formula">
+                        Volume Total (Go) = (N_utilisateurs × N_enregistrements × T_enregistrement) / 1 048 576<br>
+                        Coût Stockage = Volume Total × C_stockage<br>
+                        Coût Sauvegardes = Volume Total × C_sauvegarde<br>
+                        Coût Redondance = Volume Total × C_redondance<br>
+                        Nombre Total de Requêtes = N_utilisateurs × (N_lectures + N_ecritures)<br>
+                        Coût Requêtes = Nombre Total de Requêtes × C_requete<br>
+                        Coût Total BD = Coût Stockage + Coût Sauvegardes + Coût Redondance + Coût Requêtes
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 AliaTech. Tous droits réservés.</p>
+        </div>
+    </footer>
+    <!-- JavaScript spécifique au calculateur base de données -->
+    <script>
+        function calculateCost() {
+            // Récupération des valeurs des inputs
+            const N_utilisateurs = parseFloat(document.getElementById('N_utilisateurs').value);
+            const N_enregistrements = parseFloat(document.getElementById('N_enregistrements').value);
+            const T_enregistrement = parseFloat(document.getElementById('T_enregistrement').value);
+            const C_stockage = parseFloat(document.getElementById('C_stockage').value);
+            const C_sauvegarde = parseFloat(document.getElementById('C_sauvegarde').value);
+            const C_redondance = parseFloat(document.getElementById('C_redondance').value);
+            const N_lectures = parseFloat(document.getElementById('N_lectures').value);
+            const N_ecritures = parseFloat(document.getElementById('N_ecritures').value);
+            const C_requete = parseFloat(document.getElementById('C_requete').value);
+
+            // Calculs
+            const volumeTotal = (N_utilisateurs * N_enregistrements * T_enregistrement) / 1048576; // Convertir Ko en Go
+
+            const coutStockage = volumeTotal * C_stockage;
+            const coutSauvegarde = volumeTotal * C_sauvegarde;
+            const coutRedondance = volumeTotal * C_redondance;
+
+            const nombreTotalRequetes = N_utilisateurs * (N_lectures + N_ecritures);
+            const coutRequetes = nombreTotalRequetes * C_requete;
+
+            const coutTotal = coutStockage + coutSauvegarde + coutRedondance + coutRequetes;
+
+            // Mise à jour de l'affichage
+            document.getElementById('totalCost').textContent = `Coût Total Base de Données : €${coutTotal.toFixed(4)}`;
+
+            // Mise à jour du graphique
+            updateChart([coutStockage, coutSauvegarde, coutRedondance, coutRequetes]);
+
+            // Mise à jour des détails
+            updateCostDetails({
+                "Volume Total (Go)": volumeTotal.toFixed(4),
+                "Coût Stockage": coutStockage.toFixed(4),
+                "Coût Sauvegardes": coutSauvegarde.toFixed(4),
+                "Coût Redondance": coutRedondance.toFixed(4),
+                "Coût Requêtes": coutRequetes.toFixed(4)
+            });
+        }
+
+        let chart;
+        function updateChart(data) {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ["Stockage", "Sauvegardes", "Redondance", "Requêtes"],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.7)',
+                            'rgba(34, 197, 94, 0.7)',
+                            'rgba(234, 179, 8, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(37, 99, 235, 1)',
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(234, 179, 8, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        function updateCostDetails(costs) {
+            const detailsDiv = document.getElementById('costDetails');
+            detailsDiv.innerHTML = '<h3>Détails des Coûts</h3>';
+            for (const [key, value] of Object.entries(costs)) {
+                const item = document.createElement('p');
+                item.textContent = `${key} : ${value} €`;
+                detailsDiv.appendChild(item);
+            }
+        }
+
+        // Event Listeners
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculateCost);
+        });
+
+        // Initial Calculation
+        calculateCost();
+    </script>
+    <style>
+        /* styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.hero {
+    background-color: #f4f4f4;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.calculators {
+    padding: 2rem 0;
+}
+
+.calculator-grid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.calculator-card {
+    background-color: #fff;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 250px;
+}
+
+.calculator-card h3 {
+    margin-top: 0;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #2563EB;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 1rem;
+}
+
+.btn:hover {
+    background-color: #1e4bb8;
+}
+
+footer {
+    background-color: #2563EB;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    color: #2563EB;
+}
+
+.calculator {
+    margin-top: 2rem;
+}
+
+.input-section, .result-section {
+    background-color: #FFFFFF;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+input[type="number"], input[type="range"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 5px;
+}
+
+.result {
+    font-size: 1.5rem;
+    color: #2563EB;
+    text-align: center;
+}
+
+.math-info {
+    background-color: #E5E7EB;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+}
+
+.math-info h3 {
+    margin-top: 0;
+}
+
+@media (max-width: 768px) {
+    .calculator-grid {
+        flex-direction: column;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+    </style>
+</body>
+</html>

@@ -2,387 +2,67 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>AliaTech Calculateur de Coûts</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Styles CSS */
-        :root {
-            --primary-color: #2563EB;
-            --secondary-color: #34D399;
-            --background-color: #F3F4F6;
-            --text-color: #111827;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 2rem;
-        }
-
-        h2 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 2rem;
-        }
-
-        .calculator {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .input-section, .result-section {
-            background-color: #FFFFFF;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .slider-container, .input-group {
-            margin-bottom: 1rem;
-        }
-
-        .slider-label, label {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .slider-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .slider-value {
-            min-width: 80px;
-            text-align: right;
-        }
-
-        input[type="range"] {
-            flex: 1;
-            -webkit-appearance: none;
-            height: 8px;
-            border-radius: 5px;
-            background: #E5E7EB;
-            outline: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #D1D5DB;
-            border-radius: 5px;
-        }
-
-        .settings-btn {
-            background-color: var(--secondary-color);
-            color: #FFFFFF;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 1rem;
-        }
-
-        .settings-panel {
-            display: none;
-        }
-
-        .settings-panel.show {
-            display: block;
-        }
-
-        .result {
-            font-size: 2rem;
-            text-align: center;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-
-        #costDetails {
-            margin-top: 1rem;
-        }
-
-        #costChart {
-            max-width: 100%;
-            height: 400px;
-        }
-
-        .category-item {
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            background-color: #F9FAFB;
-            border-radius: 5px;
-        }
-
-        .category-name {
-            font-weight: bold;
-        }
-
-        .category-description {
-            font-size: 0.9rem;
-            color: #6B7280;
-        }
-
-        .math-info {
-            background-color: #E5E7EB;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .math-info h3 {
-            margin-bottom: 0.5rem;
-        }
-
-        .math-info p {
-            margin-bottom: 0.5rem;
-        }
-
-        .math-formula {
-            background-color: #FFFFFF;
-            padding: 0.5rem;
-            border-radius: 5px;
-            font-family: 'Courier New', monospace;
-            overflow-x: auto;
-        }
-    </style>
+    <title>Aliatech - Accueil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico">
 </head>
-<body>
-    <div class="container">
-        <h1>Calculateur de Coûts par requêtes/utilisateurs</h1>
-        <h2>Distribution Mathématiques</h2>
-        <div class="calculator">
-            <div class="input-section">
-                <div class="slider-container">
-                    <label class="slider-label">Nombre d'utilisateurs mensuels :</label>
-                    <div class="slider-wrapper">
-                        <input type="range" id="userSlider" min="0" max="100000" step="100" value="1000">
-                        <span class="slider-value" id="userValue">1,000</span>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="inputTokenCost">Coût des tokens d'entrée (€ par million) :</label>
-                    <input type="number" id="inputTokenCost" value="0.036" step="0.001">
-                </div>
-                <div class="input-group">
-                    <label for="outputTokenCost">Coût des tokens de sortie (€ par million) :</label>
-                    <input type="number" id="outputTokenCost" value="0.072" step="0.001">
-                </div>
-                <div class="input-group">
-                    <label for="ttsCost">Coût du TTS (€ par million de caractères) :</label>
-                    <input type="number" id="ttsCost" value="13.636" step="0.001">
-                </div>
-                <button class="settings-btn" onclick="toggleSettings()">Modifier les Catégories</button>
-                <div class="settings-panel" id="settingsPanel">
-                    <div id="categorySettings"></div>
-                </div>
+<body class="flex flex-col min-h-screen bg-gray-100 text-gray-800">
+    <!-- Header -->
+    <header class="bg-white shadow">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <!-- Logo et Marque -->
+            <a href="/" class="flex items-center space-x-2">
+                <!-- Logo Placeholder -->
+                <img src="logo.svg" alt="Logo AliaTech" class="h-10 w-10">
+                <span class="text-2xl font-bold text-blue-600">Aliatech</span>
+            </a>
+            <!-- Menu de Navigation -->
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="calculateur_requetes.html" class="text-blue-600 hover:text-blue-800">Calculateur Requêtes</a></li>
+                    <li><a href="calculateur_serveur.html" class="text-blue-600 hover:text-blue-800">Calculateur Serveur</a></li>
+                    <li><a href="calculateur_base_de_donnees.html" class="text-blue-600 hover:text-blue-800">Calculateur Base de Données</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8">Calculateurs des coûts de l'assisant virtuel</h1>
+        <p class="text-lg text-center mb-8">Estimation des coûts de l'assistant virtuel basée sur une distribution mathématique.</p>
+
+        <!-- Présentation des Calculateurs -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Calculateur Requêtes -->
+            <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                <h2 class="text-2xl font-semibold mb-4">Calculateur Requêtes</h2>
+                <p class="text-center mb-4">Estimez les coûts liés aux requêtes API et aux interactions avec OpenAI.</p>
+                <a href="calculateur_requetes.html" class="mt-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Accéder</a>
             </div>
-            <div class="result-section">
-                <div class="result" id="totalCost">€0.00</div>
-                <canvas id="costChart"></canvas>
-                <div id="costDetails"></div>
-                <div id="categoryList"></div>
+            <!-- Calculateur Serveur -->
+            <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                <h2 class="text-2xl font-semibold mb-4">Calculateur Serveur</h2>
+                <p class="text-center mb-4">Calculez les coûts serveurs associés au rendu de l'iframe et aux fonctionnalités associées.</p>
+                <a href="calculateur_serveur.html" class="mt-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Accéder</a>
             </div>
-            <div class="math-info">
-                <h3>Informations Mathématiques</h3>
-                <p><strong>Formule pour chaque catégorie :</strong></p>
-                <div class="math-formula">
-                    Coût Catégorie = Nombre d'Utilisateurs × Probabilité × [ (Coût Input Tokens × Input Tokens) + (Coût Output Tokens × Output Tokens) + (Coût TTS × Caractères TTS) ]
-                </div>
-                <p><strong>Note :</strong> Nombre de caractères TTS est basé sur les tokens de sortie (~0.75 caractères par token).</p>
+            <!-- Calculateur Base de Données -->
+            <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+                <h2 class="text-2xl font-semibold mb-4">Calculateur Base de Données</h2>
+                <p class="text-center mb-4">Estimez les coûts liés au stockage des données pour les analyses, KPI, et plus encore.</p>
+                <a href="calculateur-base_de_donnees.html" class="mt-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Accéder</a>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        let chart;
-        const categories = [
-            { name: "Utilisateur Fantôme 👻", p: 0.50, audio: false, inputTokens: 0, outputTokens: 0, description: "Ils viennent, ils voient, ils partent. Pas un mot, pas un son." },
-            { name: "Visiteur Timide 🐭", p: 0.25, audio: false, inputTokens: 0, outputTokens: 0, description: "Ils ouvrent le chat, mais n'osent pas parler." },
-            { name: "Bavard Occasionnel 🗣️", p: 0.10, audio: false, inputTokens: 500, outputTokens: 700, description: "Ils posent quelques questions, mais rien de fou." },
-            { name: "Mélomane Curieux 🎵", p: 0.05, audio: true, inputTokens: 1500, outputTokens: 2100, description: "Ils adorent parler... et écouter !" },
-            { name: "Questionneur Pro 🕵️", p: 0.06, audio: false, inputTokens: 2000, outputTokens: 3000, description: "Ils ont BEAUCOUP de questions." },
-            { name: "Star du Micro 🎤", p: 0.02, audio: true, inputTokens: 6000, outputTokens: 9000, description: "Pourquoi écrire quand on peut parler ?" },
-            { name: "Marathonien du Chat 🏃", p: 0.01, audio: false, inputTokens: 8000, outputTokens: 12000, description: "Ils sont là du matin au soir." },
-            { name: "Pompe à Fric 💰", p: 0.01, audio: true, inputTokens: 24000, outputTokens: 36000, description: "Ils utilisent TOUT, TOUT LE TEMPS." }
-        ];
-
-        function calculateCost() {
-            const x = parseFloat(document.getElementById('userSlider').value);
-            const cInput = parseFloat(document.getElementById('inputTokenCost').value);
-            const cOutput = parseFloat(document.getElementById('outputTokenCost').value);
-            const cTTS = parseFloat(document.getElementById('ttsCost').value);
-
-            let totalCost = 0;
-            const categoryCosts = categories.map(cat => {
-                const numUsers = x * cat.p;
-                const costInput = numUsers * (cInput * cat.inputTokens / 1000000);
-                const costOutput = numUsers * (cOutput * cat.outputTokens / 1000000);
-                let costTTS = 0;
-
-                if (cat.audio) {
-                    const charCount = cat.outputTokens * 0.75; // Approximation : 1 token ≈ 0.75 caractères en français
-                    costTTS = numUsers * (cTTS * charCount / 1000000);
-                }
-
-                const cost = costInput + costOutput + costTTS;
-                totalCost += cost;
-
-                return {
-                    name: cat.name,
-                    cost: cost,
-                    details: {
-                        "Nombre d'utilisateurs": numUsers.toFixed(0),
-                        "Coût Input Tokens": costInput.toFixed(2),
-                        "Coût Output Tokens": costOutput.toFixed(2),
-                        "Coût TTS": costTTS.toFixed(2),
-                        "Coût Total Catégorie": cost.toFixed(2)
-                    }
-                };
-            });
-
-            document.getElementById('totalCost').textContent = `Coût Total : €${totalCost.toFixed(2)}`;
-            updateChart(categoryCosts);
-            updateCategoryList(categoryCosts);
-            updateCostDetails(categoryCosts);
-        }
-
-        function updateChart(data) {
-            const ctx = document.getElementById('costChart').getContext('2d');
-            if (chart) chart.destroy();
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.map(d => d.name),
-                    datasets: [{
-                        label: 'Coût par Catégorie (€)',
-                        data: data.map(d => d.cost),
-                        backgroundColor: 'rgba(37, 99, 235, 0.7)',
-                        borderColor: 'rgba(37, 99, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-        }
-
-        function updateCategoryList(data) {
-            const list = document.getElementById('categoryList');
-            list.innerHTML = '';
-            data.forEach(cat => {
-                const item = document.createElement('div');
-                item.classList.add('category-item');
-                item.innerHTML = `
-                    <div class="category-name">${cat.name}</div>
-                    <div class="category-description">${cat.description}</div>
-                `;
-                list.appendChild(item);
-            });
-        }
-
-        function updateCostDetails(data) {
-            const detailsDiv = document.getElementById('costDetails');
-            detailsDiv.innerHTML = '<h3>Détails des Coûts par Catégorie</h3>';
-            data.forEach(cat => {
-                const catDiv = document.createElement('div');
-                catDiv.classList.add('category-item');
-                catDiv.innerHTML = `
-                    <div class="category-name">${cat.name}</div>
-                    <ul>
-                        <li>Nombre d'utilisateurs : ${cat.details["Nombre d'utilisateurs"]}</li>
-                        <li>Coût Input Tokens : €${cat.details["Coût Input Tokens"]}</li>
-                        <li>Coût Output Tokens : €${cat.details["Coût Output Tokens"]}</li>
-                        <li>Coût TTS : €${cat.details["Coût TTS"]}</li>
-                        <li><strong>Coût Total Catégorie : €${cat.details["Coût Total Catégorie"]}</strong></li>
-                    </ul>
-                `;
-                detailsDiv.appendChild(catDiv);
-            });
-        }
-
-        function toggleSettings() {
-            const panel = document.getElementById('settingsPanel');
-            panel.classList.toggle('show');
-        }
-
-        function createCategorySettings() {
-            const settingsContainer = document.getElementById('categorySettings');
-            categories.forEach((cat, index) => {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.classList.add('input-group');
-                categoryDiv.innerHTML = `
-                    <h4>${cat.name}</h4>
-                    <label for="probability${index}">Probabilité (p) :</label>
-                    <input type="number" id="probability${index}" value="${cat.p}" step="0.01" min="0" max="1">
-                    <label for="inputTokens${index}">Tokens d'entrée :</label>
-                    <input type="number" id="inputTokens${index}" value="${cat.inputTokens}" min="0">
-                    <label for="outputTokens${index}">Tokens de sortie :</label>
-                    <input type="number" id="outputTokens${index}" value="${cat.outputTokens}" min="0">
-                    <label for="audio${index}">Utilise TTS :</label>
-                    <input type="checkbox" id="audio${index}" ${cat.audio ? 'checked' : ''}>
-                `;
-                settingsContainer.appendChild(categoryDiv);
-            });
-        }
-
-        function updateCategoryValues() {
-            categories.forEach((cat, index) => {
-                cat.p = parseFloat(document.getElementById(`probability${index}`).value);
-                cat.inputTokens = parseInt(document.getElementById(`inputTokens${index}`).value);
-                cat.outputTokens = parseInt(document.getElementById(`outputTokens${index}`).value);
-                cat.audio = document.getElementById(`audio${index}`).checked;
-            });
-            calculateCost();
-        }
-
-        // Event Listeners
-        document.getElementById('userSlider').addEventListener('input', function(e) {
-            document.getElementById('userValue').textContent = parseInt(e.target.value).toLocaleString();
-            calculateCost();
-        });
-
-        document.getElementById('inputTokenCost').addEventListener('input', calculateCost);
-        document.getElementById('outputTokenCost').addEventListener('input', calculateCost);
-        document.getElementById('ttsCost').addEventListener('input', calculateCost);
-        document.getElementById('categorySettings').addEventListener('input', updateCategoryValues);
-
-        // Initial Setup
-        createCategorySettings();
-        calculateCost();
-    </script>
+    <!-- Footer -->
+    <footer class="bg-white shadow mt-8">
+        <div class="container mx-auto px-4 py-4 text-center">
+            <p class="text-gray-600">&copy; 2023 Aliatech. Tous droits réservés.</p>
+        </div>
+    </footer>
 </body>
 </html>

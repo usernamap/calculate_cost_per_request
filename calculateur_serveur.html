@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>AliaTech Calculateur de Coûts Serveur</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="favicon.ico">
+    <style>
+        /* Styles CSS */
+        :root {
+            --primary-color: #2563EB;
+            --secondary-color: #34D399;
+            --background-color: #F3F4F6;
+            --text-color: #111827;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+
+        .calculator {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .input-section, .result-section {
+            background-color: #FFFFFF;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        input[type="number"], input[type="range"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 5px;
+        }
+
+        .result {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        #costDetails {
+            margin-top: 1rem;
+        }
+
+        #costChart {
+            max-width: 100%;
+            height: 400px;
+        }
+
+        .math-info {
+            background-color: #E5E7EB;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .math-info h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .math-info p {
+            margin-bottom: 0.5rem;
+        }
+
+        .math-formula {
+            background-color: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-white shadow">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <!-- Logo et Marque -->
+            <a href="/" class="flex items-center space-x-2">
+                <!-- Logo Placeholder -->
+                <img src="logo.svg" alt="Logo AliaTech" class="h-10 w-10">
+                <span class="text-2xl font-bold text-blue-600">Aliatech</span>
+            </a>
+            <!-- Menu de Navigation -->
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="calculateur_requetes.html" class="text-blue-600 hover:text-blue-800">Calculateur Requêtes</a></li>
+                    <li><a href="calculateur_serveur.html" class="text-blue-600 hover:text-blue-800">Calculateur Serveur</a></li>
+                    <li><a href="calculateur_base_de_donnees.html" class="text-blue-600 hover:text-blue-800">Calculateur Base de Données</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <div class="calculator">
+            <div class="input-section">
+                <h2>Paramètres Généraux</h2>
+                <div class="input-group">
+                    <label for="N_visiteurs">Nombre de visiteurs du site client par mois :</label>
+                    <input type="number" id="N_visiteurs" value="100000" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="T_Chargement">Taux de chargement de l'iframe (%) :</label>
+                    <input type="number" id="T_Chargement" value="50" min="0" max="100">
+                </div>
+                <div class="input-group">
+                    <label for="P_iframe">Poids de l'iframe (Ko) :</label>
+                    <input type="number" id="P_iframe" value="500" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="N_requetes_iframe">Nombre de requêtes serveur par chargement de l'iframe :</label>
+                    <input type="number" id="N_requetes_iframe" value="5" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="C_bande_passante">Coût de bande passante (€ par Go) :</label>
+                    <input type="number" id="C_bande_passante" value="0.05" step="0.001" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="C_requete">Coût par requête serveur (€) :</label>
+                    <input type="number" id="C_requete" value="0.00001" step="0.00001" min="0">
+                </div>
+                <h2>Paramètres des Interactions Utilisateurs</h2>
+                <div class="input-group">
+                    <label for="T_Interaction">Taux d'interaction avec l'iframe (%) :</label>
+                    <input type="number" id="T_Interaction" value="10" min="0" max="100">
+                </div>
+                <div class="input-group">
+                    <label for="N_interactions">Nombre moyen d'interactions par utilisateur :</label>
+                    <input type="number" id="N_interactions" value="5" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="C_interaction">Coût par interaction (€) :</label>
+                    <input type="number" id="C_interaction" value="0.0001" step="0.00001" min="0">
+                </div>
+                <h2>Paramètres des Rapports Marketing</h2>
+                <div class="input-group">
+                    <label for="F_rapports">Nombre de rapports générés par mois :</label>
+                    <input type="number" id="F_rapports" value="4" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="C_rapport">Coût de génération d'un rapport (€) :</label>
+                    <input type="number" id="C_rapport" value="1" step="0.01" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="S_donnees">Volume de données analytiques stockées (Go) :</label>
+                    <input type="number" id="S_donnees" value="10" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="C_stockage">Coût de stockage (€ par Go par mois) :</label>
+                    <input type="number" id="C_stockage" value="0.02" step="0.001" min="0">
+                </div>
+            </div>
+            <div class="result-section">
+                <div class="result" id="totalCost">Coût Total Serveur : €0.00</div>
+                <canvas id="costChart"></canvas>
+                <div id="costDetails"></div>
+            </div>
+            <div class="math-info">
+                <h3>Informations Mathématiques</h3>
+                <p><strong>Formules Utilisées :</strong></p>
+                <div class="math-formula">
+                    Coût Transfert Iframe = N_visiteurs × (T_Chargement / 100) × (P_iframe / 1 024) × C_bande_passante<br>
+                    Coût Requêtes Iframe = N_visiteurs × (T_Chargement / 100) × N_requetes_iframe × C_requete<br>
+                    Coût Interactions = N_visiteurs × (T_Interaction / 100) × N_interactions × C_interaction<br>
+                    Coût Rapports = F_rapports × C_rapport<br>
+                    Coût Stockage = S_donnees × C_stockage<br>
+                    Coût Total Serveur = Somme des coûts ci-dessus
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function calculateCost() {
+            // Récupération des valeurs des inputs
+            const N_visiteurs = parseFloat(document.getElementById('N_visiteurs').value);
+            const T_Chargement = parseFloat(document.getElementById('T_Chargement').value) / 100;
+            const P_iframe = parseFloat(document.getElementById('P_iframe').value);
+            const N_requetes_iframe = parseFloat(document.getElementById('N_requetes_iframe').value);
+            const C_bande_passante = parseFloat(document.getElementById('C_bande_passante').value);
+            const C_requete = parseFloat(document.getElementById('C_requete').value);
+
+            const T_Interaction = parseFloat(document.getElementById('T_Interaction').value) / 100;
+            const N_interactions = parseFloat(document.getElementById('N_interactions').value);
+            const C_interaction = parseFloat(document.getElementById('C_interaction').value);
+
+            const F_rapports = parseFloat(document.getElementById('F_rapports').value);
+            const C_rapport = parseFloat(document.getElementById('C_rapport').value);
+
+            const S_donnees = parseFloat(document.getElementById('S_donnees').value);
+            const C_stockage = parseFloat(document.getElementById('C_stockage').value);
+
+            // Calculs
+            const coutTransfertIframe = N_visiteurs * T_Chargement * (P_iframe / 1024) * C_bande_passante;
+            const coutRequetesIframe = N_visiteurs * T_Chargement * N_requetes_iframe * C_requete;
+            const coutInteractions = N_visiteurs * T_Interaction * N_interactions * C_interaction;
+            const coutRapports = F_rapports * C_rapport;
+            const coutStockage = S_donnees * C_stockage;
+
+            const coutTotal = coutTransfertIframe + coutRequetesIframe + coutInteractions + coutRapports + coutStockage;
+
+            // Mise à jour de l'affichage
+            document.getElementById('totalCost').textContent = `Coût Total Serveur : €${coutTotal.toFixed(2)}`;
+
+            // Mise à jour du graphique
+            updateChart([coutTransfertIframe, coutRequetesIframe, coutInteractions, coutRapports, coutStockage]);
+
+            // Mise à jour des détails
+            updateCostDetails({
+                "Coût Transfert Iframe": coutTransfertIframe,
+                "Coût Requêtes Iframe": coutRequetesIframe,
+                "Coût Interactions": coutInteractions,
+                "Coût Rapports": coutRapports,
+                "Coût Stockage": coutStockage
+            });
+        }
+
+        let chart;
+        function updateChart(data) {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ["Transfert Iframe", "Requêtes Iframe", "Interactions", "Rapports", "Stockage"],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.7)',
+                            'rgba(34, 197, 94, 0.7)',
+                            'rgba(234, 179, 8, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(139, 92, 246, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(37, 99, 235, 1)',
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(234, 179, 8, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(139, 92, 246, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        function updateCostDetails(costs) {
+            const detailsDiv = document.getElementById('costDetails');
+            detailsDiv.innerHTML = '<h3>Détails des Coûts</h3>';
+            for (const [key, value] of Object.entries(costs)) {
+                const item = document.createElement('p');
+                item.textContent = `${key} : €${value.toFixed(2)}`;
+                detailsDiv.appendChild(item);
+            }
+        }
+
+        // Event Listeners
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculateCost);
+        });
+
+        // Initial Calculation
+        calculateCost();
+    </script>
+</body>
+</html>
